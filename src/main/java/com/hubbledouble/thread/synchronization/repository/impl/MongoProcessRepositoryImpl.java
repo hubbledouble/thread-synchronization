@@ -22,7 +22,7 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -41,10 +41,10 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
     private static final String FIELD_PROCESS_SOURCE_ID = "processSourceId";
     private static final String FIELD_VERSION = "version";
     private static final String FIELD_HEARTBEAT = "heartbeat";
-    private final MongoTemplate mongoTemplate;
+    private final MongoOperations mongoOperations;
 
-    public MongoProcessRepositoryImpl(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
+    public MongoProcessRepositoryImpl(MongoOperations mongoOperations) {
+        this.mongoOperations = mongoOperations;
     }
 
     @Override
@@ -52,7 +52,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
 
         Query find = new Query();
         find.addCriteria(Criteria.where(FIELD_PROCESS_NAME).is(processName));
-        return mongoTemplate.findOne(find, Process.class);
+        return mongoOperations.findOne(find, Process.class);
 
     }
 
@@ -63,7 +63,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
         find
                 .addCriteria(Criteria.where(FIELD_PROCESS_NAME).is(processName))
                 .addCriteria(Criteria.where(FIELD_PROCESS_SOURCE_ID).is(processSourceId));
-        return mongoTemplate.findOne(find, Process.class);
+        return mongoOperations.findOne(find, Process.class);
 
     }
 
@@ -71,7 +71,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
     public boolean insertLock(String processName, String processSourceId) {
 
         try {
-            mongoTemplate.insert(new Process(processName, processSourceId));
+            mongoOperations.insert(new Process(processName, processSourceId));
             return true;
         } catch (DuplicateKeyException e) {
             return false;
@@ -91,7 +91,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
         Update update = createUpdate(process, processSourceId);
 
         try {
-            UpdateResult updateResult = mongoTemplate.upsert(find, update, Process.class);
+            UpdateResult updateResult = mongoOperations.upsert(find, update, Process.class);
             return null != updateResult && updateResult.getMatchedCount() > 0;
         } catch (DuplicateKeyException e) {
             return false;
@@ -109,13 +109,13 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
                 .addCriteria(Criteria.where(FIELD_VERSION).is(process.getVersion()));
 
         Update update = createUpdate(process, process.getProcessSourceId());
-        mongoTemplate.upsert(find, update, Process.class);
+        mongoOperations.upsert(find, update, Process.class);
 
     }
 
     @Override
     public void delete(Process process) {
-        mongoTemplate.remove(process);
+        mongoOperations.remove(process);
     }
 
     @Override
@@ -127,7 +127,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
                 Criteria.where(FIELD_HEARTBEAT).exists(false));
 
         Query find = new Query(criteria);
-        mongoTemplate.findAllAndRemove(find, Process.class);
+        mongoOperations.findAllAndRemove(find, Process.class);
 
     }
 
@@ -138,7 +138,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
         process.setVersion();
 
         BasicDBObject basicDBObject = new BasicDBObject();
-        mongoTemplate.getConverter().write(process, basicDBObject);
+        mongoOperations.getConverter().write(process, basicDBObject);
         BasicDBObject updateDoc = new BasicDBObject("$set", basicDBObject);
 
         return Update.fromDocument(new Document(updateDoc.toMap()));

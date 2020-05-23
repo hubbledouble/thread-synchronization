@@ -20,7 +20,7 @@ import com.hubbledouble.thread.synchronization.processor.ThreadProcessor;
 import com.hubbledouble.thread.synchronization.repository.impl.MongoProcessRepositoryImpl;
 import com.hubbledouble.thread.synchronization.service.impl.LockServiceImpl;
 import com.hubbledouble.thread.synchronization.service.impl.ProcessServiceImpl;
-import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.MongoOperations;
 
 /**
  * Thread Synchronization.
@@ -30,7 +30,7 @@ import org.springframework.data.mongodb.core.MongoTemplate;
  * <pre>
  * <code>
  *  Usage:
- *      ThreadSynchronization threadSynchronization = new ThreadSynchronization(mongoTemplate);
+ *      ThreadSynchronization threadSynchronization = new ThreadSynchronization(mongoOperations);
  *      threadSynchronization.execute("processName", () -> {
  *          String usage = "Usage";
  *          System.out.println(usage);
@@ -48,12 +48,12 @@ public class ThreadSynchronization {
 
     private final ThreadProcessor threadProcessor;
 
-    public ThreadSynchronization(MongoTemplate mongoTemplate) {
+    public ThreadSynchronization(MongoOperations mongoOperations) {
         this.threadProcessor =
                 new ThreadProcessor(
                         new LockServiceImpl(
                                 new ProcessServiceImpl(
-                                        new MongoProcessRepositoryImpl(mongoTemplate))));
+                                        new MongoProcessRepositoryImpl(mongoOperations))));
     }
 
     public boolean execute(String processName, RunnableCode runnableCode) {
