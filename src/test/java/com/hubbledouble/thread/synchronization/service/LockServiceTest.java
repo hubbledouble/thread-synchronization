@@ -16,14 +16,16 @@
 
 package com.hubbledouble.thread.synchronization.service;
 
-import com.hubbledouble.thread.synchronization.service.impl.LockServiceImpl;
 import com.hubbledouble.thread.synchronization.collection.SimulatorProcessCollection;
+import com.hubbledouble.thread.synchronization.domain.Process;
+import com.hubbledouble.thread.synchronization.service.impl.LockServiceImpl;
 import com.hubbledouble.thread.synchronization.service.impl.SimulatorProcessServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 
 public class LockServiceTest {
@@ -68,6 +70,37 @@ public class LockServiceTest {
         lockService.acquireLock(PROCESS_NAME, SOURCE_ID, null);
         lockService.releaseLock(PROCESS_NAME, SOURCE_ID);
         Assert.assertFalse(simulatorProcessCollection.getProcessCollection().containsKey(PROCESS_NAME));
+
+    }
+
+    @Test
+    public void test_acquireLock_RemoveAllOldProcesses() {
+
+        Process process = new Process();
+        process.setProcessName("oldProcess");
+        process.setHeartbeat(Instant.now().minusSeconds(3600));
+        simulatorProcessCollection.getProcessCollection().put("oldProcess", process);
+
+        Assert.assertTrue(lockService.acquireLock(PROCESS_NAME, SOURCE_ID, Duration.of(60, ChronoUnit.SECONDS)));
+        lockService.releaseLock(PROCESS_NAME, SOURCE_ID);
+
+        Assert.assertTrue(simulatorProcessCollection.getProcessCollection().isEmpty());
+
+    }
+
+    @Test
+    public void test_acquireLock_DoNotRemoveOtherNewProcesses() {
+
+        Process process = new Process();
+        process.setProcessName("newProcess");
+        process.setHeartbeat(Instant.now().plusSeconds(3600));
+        simulatorProcessCollection.getProcessCollection().put("newProcess", process);
+
+        Assert.assertTrue(lockService.acquireLock(PROCESS_NAME, SOURCE_ID, Duration.of(60, ChronoUnit.SECONDS)));
+        lockService.releaseLock(PROCESS_NAME, SOURCE_ID);
+
+        Assert.assertTrue(!simulatorProcessCollection.getProcessCollection().isEmpty());
+        Assert.assertTrue(simulatorProcessCollection.getProcessCollection().containsKey("newProcess"));
 
     }
 
