@@ -19,10 +19,16 @@ package com.hubbledouble.thread.synchronization.repository.impl;
 import com.hubbledouble.thread.synchronization.domain.Process;
 import com.hubbledouble.thread.synchronization.repository.ProcessRepository;
 import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
+import com.mongodb.client.model.IndexOptions;
 import com.mongodb.client.result.UpdateResult;
 import org.bson.Document;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexDefinition;
+import org.springframework.data.mongodb.core.index.TextIndexDefinition;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -45,6 +51,7 @@ public class MongoProcessRepositoryImpl implements ProcessRepository {
 
     public MongoProcessRepositoryImpl(MongoOperations mongoOperations) {
         this.mongoOperations = mongoOperations;
+        mongoOperations.indexOps(Process.class).ensureIndex(new Index().on(FIELD_PROCESS_NAME, Sort.Direction.ASC).unique());
     }
 
     @Override
