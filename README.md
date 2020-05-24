@@ -7,10 +7,10 @@ Requirements:
 - Mongo database (library will write to it for synchronizing the processes)
 - Spring Mongo Data
 ```
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-mongodb</artifactId>
-		</dependency>
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
 ```
 
 Usage example:  
