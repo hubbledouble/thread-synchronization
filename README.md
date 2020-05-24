@@ -26,7 +26,7 @@ External requirements:
 ```
   
 <br />    
-Sample java code:
+Sample java code:  
 ```java
 import com.hubbledouble.thread.synchronization.ThreadSynchronization;
 import com.mongodb.client.MongoClient;
@@ -58,4 +58,4 @@ public class Application {
     }
 
 }
- ```
+```
