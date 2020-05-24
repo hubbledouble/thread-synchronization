@@ -16,6 +16,8 @@
 
 package com.hubbledouble.thread.synchronization;
 
+import com.hubbledouble.thread.synchronization.exception.RunnableCodeException;
+import com.hubbledouble.thread.synchronization.exception.ThreadSynchronizationException;
 import com.hubbledouble.thread.synchronization.processor.ThreadProcessor;
 import com.hubbledouble.thread.synchronization.repository.impl.MongoProcessRepositoryImpl;
 import com.hubbledouble.thread.synchronization.service.impl.LockServiceImpl;
@@ -27,19 +29,7 @@ import org.springframework.data.mongodb.core.MongoOperations;
  * Use this class to ensure two or more concurrent processes or threads
  * do not simultaneously execute some particular program segment known as critical section.
  *
- * <pre>
- * <code>
- *  Usage:
- *      ThreadSynchronization threadSynchronization = new ThreadSynchronization(mongoOperations);
- *      threadSynchronization.execute("processName", () -> {
- *          String usage = "Usage";
- *          System.out.println(usage);
- *      });
- * </code>
- * </pre>
- *
  * @author Jorge Saldivar
- * @throws {@link com.hubbledouble.thread.synchronization.exception.RunnableCodeException}, {@link com.hubbledouble.thread.synchronization.exception.ThreadSynchronizationException}
  * @see <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)#Thread_or_process_synchronization">
  * Thread Synchronization info
  * </a>
@@ -56,7 +46,28 @@ public class ThreadSynchronization {
                                         new MongoProcessRepositoryImpl(mongoOperations))));
     }
 
-    public boolean execute(String processName, RunnableCode runnableCode) {
+    /**
+     * Call this method to perform thread synchronization
+     * <p>
+     * Usage:
+     * <pre>
+     *  <code>
+     *       ThreadSynchronization threadSynchronization = new ThreadSynchronization(mongoOperations);
+     *       threadSynchronization.execute("processName", () -> {
+     *           String usage = "Usage";
+     *           System.out.println(usage);
+     *       });
+     *  </code>
+     *  </pre>
+     *
+     * @param processName
+     * @param runnableCode
+     * @return
+     * @throws RunnableCodeException
+     * @throws ThreadSynchronizationException
+     */
+    public boolean execute(String processName, RunnableCode runnableCode)
+            throws RunnableCodeException, ThreadSynchronizationException {
         return threadProcessor.execute(processName, runnableCode);
     }
 
