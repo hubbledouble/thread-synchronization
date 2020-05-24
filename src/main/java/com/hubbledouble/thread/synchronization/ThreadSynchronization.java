@@ -60,11 +60,17 @@ public class ThreadSynchronization {
      *  </code>
      *  </pre>
      *
-     * @param processName
-     * @param runnableCode
-     * @return
-     * @throws RunnableCodeException
-     * @throws ThreadSynchronizationException
+     * @param processName - The name of the process
+     *                      so it can be synchronized if other thread is trying to execute the same process
+     * @param runnableCode - Functional interface
+     *                       The code the process will execute during the synchronized block
+     * @return boolean:
+     *          If true, thread process executed.
+     *          If false, other thread in the same or other node is currently executing the process
+     * @throws RunnableCodeException - Any exception that could be thrown by the RunnableCode
+     * @throws ThreadSynchronizationException - Any exception that could be thrown by this library
+     *                                          With the exception of exceptions thrown by the RunnableCode
+     *                                          Example: Database is down and not able to determine if acquiring lock succeed
      */
     public boolean execute(String processName, RunnableCode runnableCode)
             throws RunnableCodeException, ThreadSynchronizationException {
