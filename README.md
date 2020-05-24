@@ -2,7 +2,8 @@
 Ensures two or more concurrent thread processes be synchronized so they don't execute simultaneously critical code sections. Using this library makes it easy to focus on the business process than worrying about performing thread synchronization while executing the same process code in two or more distributed nodes.  
   
 For more about thread synchronization, please visit [here](https://en.wikipedia.org/wiki/Synchronization_(computer_science)#Thread_or_process_synchronization)  
-    
+   
+     
 Usage example:  
 Import the following library
 ```xml
@@ -13,6 +14,7 @@ Import the following library
 </dependency>
 ```
   
+    
 External requirements:
 - Mongo database (this libreary will write to it for synchronizing the processes)
 - Spring Mongo Data dependency
@@ -23,6 +25,7 @@ External requirements:
 </dependency>
 ```
   
+    
 Sample java code:
 ```java
 import com.hubbledouble.thread.synchronization.ThreadSynchronization;
