@@ -25,7 +25,7 @@ External requirements:
 </dependency>
 ```
   
-\s\s
+
 Sample java code:  
 ```java
 import com.hubbledouble.thread.synchronization.ThreadSynchronization;
