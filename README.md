@@ -4,7 +4,7 @@ Ensures two or more concurrent thread processes be synchronized so they don't ex
 For more about thread synchronization, please visit [here](https://en.wikipedia.org/wiki/Synchronization_(computer_science)#Thread_or_process_synchronization)  
     
 Usage example:  
-#### Import the following library
+Import the following library
 ```xml
 <dependency>
 	<groupId>com.hubbledouble</groupId>
