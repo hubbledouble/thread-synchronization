@@ -14,7 +14,7 @@ Import the following library
 </dependency>
 ```
   
-<br />    
+    
 External requirements:
 - Mongo database (this libreary will write to it for synchronizing the processes)
 - Spring Mongo Data dependency
@@ -25,7 +25,7 @@ External requirements:
 </dependency>
 ```
   
-<br />    
+   
 Sample java code:  
 ```java
 import com.hubbledouble.thread.synchronization.ThreadSynchronization;
